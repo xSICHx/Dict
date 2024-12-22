@@ -1,8 +1,10 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <vector>
 #include <algorithm>
 #include <unordered_set>
+#include <set>
 #include <cctype>
 
 using namespace std;
@@ -25,11 +27,12 @@ unordered_set<string> readDict(const string& filename, const char& separator){
 }
 
 
-string findSameWord(string& word, unordered_set<string>& dict){
+vector<string> findSameWords(string& word, unordered_set<string>& dict){
     string checkWord;
+    unordered_set<string> result;
     
     if (word.size() <= 1)
-        return "";
+        return vector<string>(result.begin(), result.end());
 
     // удаление буквы
     for (size_t pos = 0; pos < word.size(); ++pos)
@@ -37,7 +40,9 @@ string findSameWord(string& word, unordered_set<string>& dict){
         checkWord = word;
         checkWord.erase(pos, 1);
         if (dict.find(checkWord) != dict.end()){
-            return checkWord;
+            // cout << "delete pos " << pos << endl;
+            result.insert(checkWord);
+            // result.push_back(checkWord);
         }
         // cout << checkWord << endl;
     }
@@ -48,7 +53,9 @@ string findSameWord(string& word, unordered_set<string>& dict){
             checkWord = word;
             checkWord.insert(pos, 1, letter);
             if (dict.find(checkWord) != dict.end()){
-                return checkWord;
+                // cout << "add pos " << pos << " letter " << letter << endl;
+                result.insert(checkWord);
+                // result.push_back(checkWord);
             }
             // cout << checkWord << endl;
         }
@@ -60,13 +67,15 @@ string findSameWord(string& word, unordered_set<string>& dict){
             checkWord = word;
             checkWord.replace(pos, 1, 1, letter);
             if (dict.find(checkWord) != dict.end()){
-                return checkWord;
+                // cout << "change pos " << pos << " letter " << letter << endl;
+                result.insert(checkWord);
+                // result.push_back(checkWord);
             }
             // cout << checkWord << endl;
         }
     }
 
-    return "";
+    return vector<string>(result.begin(), result.end());
 }
 
 
@@ -81,7 +90,7 @@ void handleWord(string& word, unordered_set<string>& dict){
     if (dict.find(lowercasedWord) != dict.end())
         return;
 
-    string sameWord = findSameWord(lowercasedWord, dict);
+    vector<string> sameWords = findSameWords(lowercasedWord, dict);
 
     // Обработка ответа пользователя
     int choice;
@@ -90,27 +99,31 @@ void handleWord(string& word, unordered_set<string>& dict){
     cout << "What would you like to do with the word " << word <<":\n" 
         << "1. Ignore;\n" 
         << "2. Add to dictionary\n";
-    if (!sameWord.empty()){
-        cout << "3. Replace with a similar one: " << sameWord << ".\n";
+    if (!sameWords.empty()){
+        for (size_t i = 0; i < sameWords.size(); i++)
+        {
+            cout << to_string(i+3) + ". Replace with a similar one: " << sameWords[i] << ".\n";
+        }
     }
-    cout << "Enter a single digit.\n";
+    cout << "Enter a single number.\n";
     cin >> input;
 
-    // Проверяем, является ли ввод цифрой и находится ли он в диапазоне 1-3
-    if (input.length() == 1 && input[0] >= '1' && input[0] <= '3') {
-        choice = input[0] - '0';
-    } else {
-        choice = 1; // Если ввод некорректный, выбираем вариант 1
-    }
-    if (sameWord.empty() and choice == 3) // ситуация, когда нет похожего, но выбрано 3
+    // Проверяем, является ли ввод числом и находится ли он в нужном диапазоне
+    istringstream iss(input);
+    if (!(iss >> choice) || choice < 0 || choice > (sameWords.size()+2)) {
+        // Если строка не является числом или число вне диапазона, устанавливаем его в 1
         choice = 1;
-
+    }
+    
     
     switch (choice) {
+        case 1:
+            break;
         case 2:
             dict.insert(lowercasedWord);
             break;
-        case 3:
+        default:
+            string sameWord = sameWords[choice-3];
             if (isupper(word[0])){ // если первая заглавная
                 sameWord[0] = toupper(sameWord[0]);
             }
