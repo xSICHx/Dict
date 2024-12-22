@@ -31,7 +31,7 @@ string findSameWord(string& word, unordered_set<string>& dict){
     if (word.size() <= 1)
         return "";
 
-    // удаление буквы
+    // СѓРґР°Р»РµРЅРёРµ Р±СѓРєРІС‹
     for (size_t pos = 0; pos < word.size(); ++pos)
     {
         checkWord = word;
@@ -42,7 +42,7 @@ string findSameWord(string& word, unordered_set<string>& dict){
         // cout << checkWord << endl;
     }
 
-    // добавление буквы
+    // РґРѕР±Р°РІР»РµРЅРёРµ Р±СѓРєРІС‹
     for (char letter = 'a'; letter <= 'z'; ++letter){
         for (size_t pos = 0; pos <= word.size(); ++pos) {
             checkWord = word;
@@ -54,7 +54,7 @@ string findSameWord(string& word, unordered_set<string>& dict){
         }
     }
 
-    // замена буквы
+    // Р·Р°РјРµРЅР° Р±СѓРєРІС‹
     for (char letter = 'a'; letter <= 'z'; ++letter){
         for (size_t pos = 0; pos < word.size(); ++pos) {
             checkWord = word;
@@ -77,13 +77,13 @@ void handleWord(string& word, unordered_set<string>& dict){
     );
 
 
-    // если есть слово в словаре
+    // РµСЃР»Рё РµСЃС‚СЊ СЃР»РѕРІРѕ РІ СЃР»РѕРІР°СЂРµ
     if (dict.find(lowercasedWord) != dict.end())
         return;
 
     string sameWord = findSameWord(lowercasedWord, dict);
 
-    // Обработка ответа пользователя
+    // РћР±СЂР°Р±РѕС‚РєР° РѕС‚РІРµС‚Р° РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
     int choice;
     string input;
 
@@ -96,13 +96,13 @@ void handleWord(string& word, unordered_set<string>& dict){
     cout << "Enter a single digit.\n";
     cin >> input;
 
-    // Проверяем, является ли ввод цифрой и находится ли он в диапазоне 1-3
+    // РџСЂРѕРІРµСЂСЏРµРј, СЏРІР»СЏРµС‚СЃСЏ Р»Рё РІРІРѕРґ С†РёС„СЂРѕР№ Рё РЅР°С…РѕРґРёС‚СЃСЏ Р»Рё РѕРЅ РІ РґРёР°РїР°Р·РѕРЅРµ 1-3
     if (input.length() == 1 && input[0] >= '1' && input[0] <= '3') {
         choice = input[0] - '0';
     } else {
-        choice = 1; // Если ввод некорректный, выбираем вариант 1
+        choice = 1; // Р•СЃР»Рё РІРІРѕРґ РЅРµРєРѕСЂСЂРµРєС‚РЅС‹Р№, РІС‹Р±РёСЂР°РµРј РІР°СЂРёР°РЅС‚ 1
     }
-    if (sameWord.empty() and choice == 3) // ситуация, когда нет похожего, но выбрано 3
+    if (sameWord.empty() and choice == 3) // СЃРёС‚СѓР°С†РёСЏ, РєРѕРіРґР° РЅРµС‚ РїРѕС…РѕР¶РµРіРѕ, РЅРѕ РІС‹Р±СЂР°РЅРѕ 3
         choice = 1;
 
     
@@ -111,7 +111,7 @@ void handleWord(string& word, unordered_set<string>& dict){
             dict.insert(lowercasedWord);
             break;
         case 3:
-            if (isupper(word[0])){ // если первая заглавная
+            if (isupper(word[0])){ // РµСЃР»Рё РїРµСЂРІР°СЏ Р·Р°РіР»Р°РІРЅР°СЏ
                 sameWord[0] = toupper(sameWord[0]);
             }
             word = sameWord;
@@ -121,7 +121,7 @@ void handleWord(string& word, unordered_set<string>& dict){
 
 
 
-// Считывает и обрабатывает только слова, все остальное выводит в файл out.txt
+// РЎС‡РёС‚С‹РІР°РµС‚ Рё РѕР±СЂР°Р±Р°С‚С‹РІР°РµС‚ С‚РѕР»СЊРєРѕ СЃР»РѕРІР°, РІСЃРµ РѕСЃС‚Р°Р»СЊРЅРѕРµ РІС‹РІРѕРґРёС‚ РІ С„Р°Р№Р» out.txt
 void readText(const string& inFilename, const string& outFilename, unordered_set<string>& dict){
     ifstream inFile(inFilename);
     if (!inFile.is_open()){
@@ -153,7 +153,7 @@ void readText(const string& inFilename, const string& outFilename, unordered_set
 }
 
 
-// Считает словарик из src/words.txt, обработает текст по вводу пользователя и запишет результат в src/out.txt
+// РЎС‡РёС‚Р°РµС‚ СЃР»РѕРІР°СЂРёРє РёР· src/words.txt, РѕР±СЂР°Р±РѕС‚Р°РµС‚ С‚РµРєСЃС‚ РїРѕ РІРІРѕРґСѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Рё Р·Р°РїРёС€РµС‚ СЂРµР·СѓР»СЊС‚Р°С‚ РІ src/out.txt
 int main(int argc, char *argv[])
 {
     unordered_set<string> dict = readDict("src/words.txt", '\n');
